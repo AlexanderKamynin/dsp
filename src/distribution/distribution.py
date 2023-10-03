@@ -4,24 +4,29 @@ import matplotlib.pyplot as plt
 
 class DeviationDistribution:
     # Calculate the deviation for signal
-    def __init__(self, true_signal):
+    def __init__(self, true_signal, processed_signal):
         self.__true_signal = true_signal
+        self.__processed_signal = processed_signal
         self.__deviation_sequence = None
         self.__distribution_function = []
 
-    def get_deviation_sequence(self, processed_signal):
+    def __calculate_deviation_sequence(self):
         sequence_length = len(self.__true_signal)
         self.__deviation_sequence = np.zeros(sequence_length)
 
         for i in range(sequence_length):
-            self.__deviation_sequence[i] = self.__true_signal[i] - processed_signal[i]
+            self.__deviation_sequence[i] = self.__true_signal[i] - self.__processed_signal[i]
 
-    def get_distribution_function(self):
+    def calculate_distribution_function(self):
         """ F(x) = P (X < x), where
             P (X < x) = count(X < x) / N where N - length of the signals sequence
         """
-        sorted_deviation = self.__deviation_sequence.sort(axis=0)
+        self.__calculate_deviation_sequence()
+        self.__deviation_sequence.sort(axis=0)
+
         sequence_length = len(self.__true_signal)
+
+        self.__distribution_function.append([0, 0]);
 
         prev_deviation = self.__deviation_sequence[0]
         count = 1
@@ -36,13 +41,6 @@ class DeviationDistribution:
 
         self.__distribution_function = np.array(self.__distribution_function)
 
-    def plot_distribution_function(self):
-        plt.figure(figsize=(16,8))
-        plt.title('Distribution function')
-        plt.xlabel('deviation - x')
-        plt.ylabel('F(x)')
-        plt.grid()
+    def get_distribution_function(self):
+      return self.__distribution_function
 
-        plt.scatter(self.__distribution_function[:, 0], self.__distribution_function[:, 1])
-
-        plt.savefig('./output/distribution.png')

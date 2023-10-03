@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.fftpack import fft, ifft
 
 
 class AutocorrelationFunction:
@@ -37,16 +38,30 @@ class AutocorrelationFunction:
             shifted_std = shifted_sequence.std()
             self.__autocorrelation_sequence[lag] = (mean_product - mean_original * mean_shifted) / (original_std * shifted_std)
 
-    def plot_autocorrelation_function(self):
-        plt.figure(figsize=(16,8))
-        plt.title('Autocorrelation function')
-        plt.xlabel('t')
-        plt.ylabel('R(t)')
-        plt.grid()
+    def fast_fourier_transform(self):
+      """
+        Autocorrelation function with using FFT (Fast Fourier Transform)
+        R(t)=Re[IFFT(|FFT(x)|^2)], where:
+          FFT - forward fast Fourier transform,
+          IFFT - inverse fast Fourier transform,
+          Re - real part of the complex number
+      """
+      # FFT(x)
+      calculation_result = fft(self.__signal_sequence)
 
-        plt.scatter(self.__time[:len(self.__time) // 4],
-                    self.__autocorrelation_sequence[:len(self.__autocorrelation_sequence) // 4])
-        plt.savefig('./output/autocorrelation.png')
+      # |FFT(x)|^2 = (sqrt(Re(x)^2 + Im(x)^2))^2 = Re(x)^2 + Im(x)^2
+      calculation_result = calculation_result.real ** 2 + calculation_result.imag ** 2
 
+      # Re[IFFT(|FFT(x)|^2)]
+      calculation_result = ifft(calculation_result).real
 
+      """
+        The result of the FFT returns C * R(t).
+        It is known that for the first element the correlation coefficient is equal to 1.
+        Then the coefficient C can be easily expressed as 1/R(0).
+      """
+      self.__autocorrelation_sequence = calculation_result / calculation_result[0]
+
+    def get_autocorrelation_function(self):
+      return self.__autocorrelation_sequence
 

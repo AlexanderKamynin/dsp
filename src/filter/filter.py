@@ -42,3 +42,4 @@ class Filter:
             filtered_signal[i] = window_sum / cur_window[2]
 
         return filtered_signal
+
