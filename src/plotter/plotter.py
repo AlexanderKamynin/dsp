@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
-
+import os
 
 class Plotter:
-  #TODO: add the checks for existing directory, if doesn't exit - create
   @staticmethod
   def plot_data(x: any, y: any, title: str, xlabel: str, ylabel: str,
                 output_filename : str = None):
@@ -14,8 +13,10 @@ class Plotter:
 
       plt.plot(x, y)
 
-      if output_filename:
-        plt.savefig(output_filename)
+      directory = os.path.dirname(output_filename)
+      if not os.path.exists(directory):
+        os.makedirs(directory)
+      plt.savefig(output_filename)
 
   @staticmethod
   def scatter_data(x: any, y: any, title: str, xlabel: str, ylabel: str,
@@ -28,6 +29,8 @@ class Plotter:
 
       plt.scatter(x, y)
 
-      if output_filename:
-        plt.savefig(output_filename)
+      directory = os.path.dirname(output_filename)
+      if not os.path.exists(directory):
+        os.makedirs(directory)
+      plt.savefig(output_filename)
 

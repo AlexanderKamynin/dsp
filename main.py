@@ -3,6 +3,8 @@ from src.filter.filter import Filter
 from src.distribution.distribution import DeviationDistribution
 from src.autocorrelation.autocorrelation import AutocorrelationFunction
 from src.plotter.plotter import Plotter
+from src.const.constant import *
+import os
 import numpy as np
 from typing import NoReturn
 
@@ -30,7 +32,9 @@ class DigitalSignalProcessing:
                                  'Generated signal',
                                  'time',
                                  'x(t)',
-                                 './output/generated_signal.png')
+                                 f'{IMAGES_PATH}generated_signal.png')
+        self.save_to_file(f'{TXT_PATH}generated_signal.txt', 'Generated signal',
+                          't | x(t)', time, self.__signal_sequence)
 
         # TODO: add the choice for filtering method (now it's one, but in future we can add more)
         # args = list(map(float, input('Input the window size time:\n').split()))
@@ -41,7 +45,9 @@ class DigitalSignalProcessing:
                                  'Filtered signal',
                                  'time',
                                  'x(t)',
-                                 './output/filtered_signal.png')
+                                 f'{IMAGES_PATH}filtered_signal.png')
+        self.save_to_file(f'{TXT_PATH}filtered_signal.txt', 'Filtered signal',
+                          't | x(t)', time, filtered_signal)
 
 
         self.__deviation_distribution = DeviationDistribution(self.__signal_sequence, filtered_signal)
@@ -51,7 +57,9 @@ class DigitalSignalProcessing:
                                     'Distribution function',
                                     'deviation x(t) - x_new(t)',
                                     'F(x)',
-                                    './output/distribution.png')
+                                    f'{IMAGES_PATH}distribution.png')
+        self.save_to_file(f'{TXT_PATH}distribution.txt', 'Deviation distribution function values',
+                          'x | F(x)', distr_func[:, 0], distr_func[:, 1])
 
         self.__autocorrelation_function = AutocorrelationFunction(self.__signal_sequence,
                                                                   self.__signal_generator.get_parameters()['time'])
@@ -61,9 +69,10 @@ class DigitalSignalProcessing:
                                     'Autocorrelation function with Ring Shift',
                                     't',
                                     'R(t)',
-                                    './output/autocorrelation.png'
+                                    f'{IMAGES_PATH}autocorrelation.png'
                                     )
-
+        self.save_to_file(f'{TXT_PATH}autoroccelation_ring_shift.txt', 'Autocorrelation function values using Ring Shift',
+                          't | R(t)', time[:len(time) // 4], autocorr_func[:len(autocorr_func) // 4])
 
         self.__autocorrelation_function.fast_fourier_transform()
         autocorr_func = self.__autocorrelation_function.get_autocorrelation_function()
@@ -71,8 +80,10 @@ class DigitalSignalProcessing:
                                     'Autocorrelation function with FFT',
                                     't',
                                     'R(t)',
-                                    './output/autocorrelation_FFT.png'
+                                    f'{IMAGES_PATH}autocorrelation_FFT.png'
                                     )
+        self.save_to_file(f'{TXT_PATH}autoroccelation_fft.txt', 'Autocorrelation function values using FFT',
+                          't | R(t)', time[:len(time) // 4], autocorr_func[:len(autocorr_func) // 4])
 
     def save_to_file(self, filename: str, title: str, line_description: str, *data: np.ndarray) -> NoReturn:
       """ Method for saving the obtained data with following template:
@@ -90,9 +101,8 @@ class DigitalSignalProcessing:
           2 6
           . . .
       """
-       # TODO:
+
       output_lines = []
-      #file = open(filename, 'w')
 
       for column, data_sample in enumerate(data):
         for row, elem in enumerate(data_sample):
@@ -100,14 +110,18 @@ class DigitalSignalProcessing:
             output_lines.append([])
           output_lines[row].append(str(elem))
 
-      output_lines =  [elem.join(' ') for elem in output_lines]
-      print(output_lines)
-      #file.close()
+      output_lines =  [" ".join(elem) + '\n' for elem in output_lines]
+
+      directory = os.path.dirname(filename)
+      if not os.path.exists(directory):
+        os.makedirs(directory)
+
+      with open(filename, "w") as file:
+        file.write('\n'.join([title, line_description]) + '\n')
+        for line in output_lines:
+          file.write(line)
 
 
 if __name__ == '__main__':
     dsp = DigitalSignalProcessing()
-    # time = [0, 1, 2, 3]
-    # x = [2, 4, 6, 8]
-    # dsp.save_to_file('./output/text.txt', 'test', 't | x(t)', time, x)
     dsp.start()
