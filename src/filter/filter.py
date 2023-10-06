@@ -2,10 +2,16 @@ import numpy as np
 
 
 class Filter:
-    def __init__(self, window_size):
+    """
+      Filter for given signal
+    """
+    def __init__(self, window_size: int):
         self.__window_size = window_size
 
-    def filter(self, signal_sequence):
+    def filter(self, signal_sequence: np.ndarray) -> np.ndarray:
+        """
+          Method for filtering signals sequence using SMA (Simple Moving Average)
+        """
         seq_length = len(signal_sequence)
         filtered_signal = np.zeros(seq_length)
 
@@ -42,4 +48,3 @@ class Filter:
             filtered_signal[i] = window_sum / cur_window[2]
 
         return filtered_signal
-

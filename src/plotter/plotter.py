@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 
 class Plotter:
+  #TODO: add the checks for existing directory, if doesn't exit - create
   @staticmethod
   def plot_data(x: any, y: any, title: str, xlabel: str, ylabel: str,
                 output_filename : str = None):

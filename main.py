@@ -3,6 +3,8 @@ from src.filter.filter import Filter
 from src.distribution.distribution import DeviationDistribution
 from src.autocorrelation.autocorrelation import AutocorrelationFunction
 from src.plotter.plotter import Plotter
+import numpy as np
+from typing import NoReturn
 
 
 class DigitalSignalProcessing:
@@ -14,7 +16,7 @@ class DigitalSignalProcessing:
         self.__deviation_distribution = None
         self.__autocorrelation_function = None
 
-    def start(self):
+    def start(self) -> NoReturn:
         # args = list(map(float, input('Input the amplitude, frequency and phase for harmonic signal:\n').split()))
         args = [3, 1, 1]
         self.__signal_generator = SignalGenerator(*args)
@@ -72,7 +74,7 @@ class DigitalSignalProcessing:
                                     './output/autocorrelation_FFT.png'
                                     )
 
-    def save_to_file(self, filename, title, line_description, *data):
+    def save_to_file(self, filename: str, title: str, line_description: str, *data: np.ndarray) -> NoReturn:
       """ Method for saving the obtained data with following template:
           {
             Title
@@ -88,21 +90,24 @@ class DigitalSignalProcessing:
           2 6
           . . .
       """
-      # TODO:
+       # TODO:
       output_lines = []
       #file = open(filename, 'w')
 
       for column, data_sample in enumerate(data):
         for row, elem in enumerate(data_sample):
-          output_lines[row][column] += str(elem) + ' '
+          if row >= len(output_lines):
+            output_lines.append([])
+          output_lines[row].append(str(elem))
 
+      output_lines =  [elem.join(' ') for elem in output_lines]
       print(output_lines)
       #file.close()
 
 
 if __name__ == '__main__':
     dsp = DigitalSignalProcessing()
+    # time = [0, 1, 2, 3]
+    # x = [2, 4, 6, 8]
+    # dsp.save_to_file('./output/text.txt', 'test', 't | x(t)', time, x)
     dsp.start()
-    #time = [0, 1, 2, 3]
-    #x = [2, 4, 6, 8]
-    #dsp.save_to_file('./output/text.txt', 'test', 't | x(t)', time, x)
