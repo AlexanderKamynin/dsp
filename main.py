@@ -85,7 +85,8 @@ class DigitalSignalProcessing:
         self.save_to_file(f'{TXT_PATH}autoroccelation_fft.txt', 'Autocorrelation function values using FFT',
                           't | R(t)', time[:len(time) // 4], autocorr_func[:len(autocorr_func) // 4])
 
-    def save_to_file(self, filename: str, title: str, line_description: str, *data: np.ndarray) -> NoReturn:
+    @staticmethod
+    def save_to_file(filename: str, title: str, line_description: str, *data: np.ndarray) -> NoReturn:
       """ Method for saving the obtained data with following template:
           {
             Title

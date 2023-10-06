@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from typing import NoReturn
 
 class DeviationDistribution:
@@ -28,14 +27,14 @@ class DeviationDistribution:
         self.__deviation_sequence.sort(axis=0)
 
         sequence_length = len(self.__true_signal)
-        # for the first value P(X < xmin) = 0
-        self.__distribution_function.append([0, 0]);
 
         prev_deviation = self.__deviation_sequence[0]
         count = 1
+
         for i in range(1, sequence_length):
             current_deviation = self.__deviation_sequence[i]
-            if current_deviation != prev_deviation:
+
+            if not np.isclose(current_deviation, prev_deviation):
                 self.__distribution_function.append([prev_deviation, count / sequence_length])
             prev_deviation = current_deviation
             count += 1

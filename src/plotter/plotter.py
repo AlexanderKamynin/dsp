@@ -12,11 +12,11 @@ class Plotter:
       plt.grid()
 
       plt.plot(x, y)
-
-      directory = os.path.dirname(output_filename)
-      if not os.path.exists(directory):
-        os.makedirs(directory)
-      plt.savefig(output_filename)
+      if output_filename:
+          directory = os.path.dirname(output_filename)
+          if not os.path.exists(directory):
+            os.makedirs(directory)
+          plt.savefig(output_filename)
 
   @staticmethod
   def scatter_data(x: any, y: any, title: str, xlabel: str, ylabel: str,
@@ -28,9 +28,9 @@ class Plotter:
       plt.grid()
 
       plt.scatter(x, y)
-
-      directory = os.path.dirname(output_filename)
-      if not os.path.exists(directory):
-        os.makedirs(directory)
-      plt.savefig(output_filename)
+      if output_filename:
+          directory = os.path.dirname(output_filename)
+          if not os.path.exists(directory):
+            os.makedirs(directory)
+          plt.savefig(output_filename)
 
