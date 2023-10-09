@@ -24,13 +24,14 @@ class SignalGenerator:
         x = self.__amplitude * np.sin(self.__frequency * self.__time + self.__phase)
         return x
 
-    def generate_noise_signal(self, start_time: float, count:int, step: float) -> np.ndarray:
+    def generate_noise_signal(self, start_time: float, count:float, step: float) -> np.ndarray:
         """
           Method for generate signal with noise on the time interval
           `start_time` - initial time
           `count` - quantity of discrete time
           `step` - step between two discrete dots of the time
         """
+        count = int(count)
         x = self.generate_signal(start_time, count, step)
         # add the noise
         noise = np.random.randn(count) # random noise with normal distribution
